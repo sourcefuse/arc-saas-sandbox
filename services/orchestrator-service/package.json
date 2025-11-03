@@ -1,0 +1,80 @@
+{
+  "name": "orchestrator-service",
+  "version": "0.0.1",
+  "description": "ARC SaaS Orchestrator Service",
+  "private": true,
+  "keywords": [
+    "loopback-application",
+    "loopback"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "lb-tsc",
+    "build:watch": "lb-tsc --watch",
+    "lint": "npm run eslint && npm run prettier:check",
+    "lint:fix": "npm run eslint:fix && npm run prettier:fix",
+    "prettier:cli": "lb-prettier \"**/*.ts\" \"**/*.js\"",
+    "prettier:check": "npm run prettier:cli -- -l",
+    "prettier:fix": "npm run prettier:cli -- --write",
+    "eslint": "eslint --report-unused-disable-directives .",
+    "eslint:fix": "npm run eslint -- --fix",
+    "pretest": "npm run rebuild",
+    "posttest": "npm run lint",
+    "docker:build": "docker build -t orchestrator-service .",
+    "docker:run": "docker run -p 3000:3000 -d orchestrator-service",
+    "premigrate": "npm run build",
+    "migrate": "node ./dist/migrate",
+    "preopenapi-spec": "npm run build",
+    "openapi-spec": "node ./dist/openapi-spec",
+    "prestart": "npm run rebuild",
+    "start": "node -r source-map-support/register .",
+    "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
+    "rebuild": "npm run clean && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "SourceFuse",
+  "license": "",
+  "files": [
+    "README.md",
+    "dist",
+    "src",
+    "!*/__tests__"
+  ],
+  "dependencies": {
+    "@aws-sdk/client-codebuild": "^3.616.0",
+    "@aws-sdk/client-dynamodb": "^3.616.0",
+    "@aws-sdk/client-eventbridge": "^3.626.0",
+    "@aws-sdk/util-dynamodb": "^3.616.0",
+    "@loopback/boot": "^8.0.4",
+    "@loopback/core": "^7.0.3",
+    "@loopback/logging": "^0.13.6",
+    "@loopback/repository": "^8.0.3",
+    "@loopback/rest": "^15.0.4",
+    "@loopback/rest-explorer": "^8.0.4",
+    "@loopback/service-proxy": "^8.0.3",
+    "@sourceloop/ctrl-plane-orchestrator-service": "^1.0.1",
+    "@vendia/serverless-express": "^4.12.6",
+    "aws-lambda": "^1.0.7",
+    "axios": "^1.7.7",
+    "jsonwebtoken": "^9.0.2",
+    "tslib": "^2.0.0"
+  },
+  "devDependencies": {
+    "@loopback/build": "^12.0.3",
+    "@loopback/eslint-config": "^16.0.1",
+    "@loopback/testlab": "^8.0.3",
+    "@types/aws-lambda": "^8.10.141",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node": "^16.18.126",
+    "eslint": "^8.57.1",
+    "source-map-support": "^0.5.21",
+    "typescript": "~5.2.2"
+  }
+}
