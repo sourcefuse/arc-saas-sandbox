@@ -59,11 +59,12 @@
     "@loopback/rest": "^15.0.4",
     "@loopback/rest-explorer": "^8.0.4",
     "@loopback/service-proxy": "^8.0.3",
-    "@sourceloop/ctrl-plane-orchestrator-service": "^1.0.1",
+    "@sourceloop/ctrl-plane-orchestrator-service": "^1.1.0",
     "@vendia/serverless-express": "^4.12.6",
     "aws-lambda": "^1.0.7",
     "axios": "^1.7.7",
     "jsonwebtoken": "^9.0.2",
+    "loopback4-message-bus-connector": "^2.0.0",
     "tslib": "^2.0.0"
   },
   "devDependencies": {

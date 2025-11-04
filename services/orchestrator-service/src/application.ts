@@ -10,24 +10,13 @@ import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
 import {MySequence} from './sequence';
 import {
-  AwsCodeBuildService,
-  OrchestratorService,
-  ProvisioningInputs,
-  TenantProvisioningHandlerProvider,
-  TenantProvisioningSuccessHandlerProvider,
-  TierDetailsProvider,
-  TenantDeploymentProvider,
-} from './services';
-import {TenantRegistrationProvider} from './services/tenant-registration.handler';
-import {Bindings} from './types';
-import {
   OrchestratorServiceBindings,
   OrchestratorServiceComponent,
-  TenantDeploymentHandler,
-  TenantProvisioningFailureHandler,
-  TenantProvisioningHandler,
-  TenantProvisioningSuccessHandler,
 } from '@sourceloop/ctrl-plane-orchestrator-service';
+import {AwsCodeBuildService, TierDetailsProvider} from './services';
+import {TenantRegistrationProvider} from './services/tenant-registration.handler';
+import {Bindings} from './types';
+import {EventBridgeConnector} from 'loopback4-message-bus-connector';
 
 export {ApplicationConfig};
 
@@ -37,29 +26,8 @@ export class OrchestratorServiceApplication extends BootMixin(
   constructor(options: ApplicationConfig = {}) {
     super(options);
 
-    // Configure orchestrator service
-    this.bind<TenantProvisioningHandler<ProvisioningInputs>>(
-      OrchestratorServiceBindings.TENANT_PROVISIONING_HANDLER,
-    ).toProvider(TenantProvisioningHandlerProvider);
-
-    this.bind<TenantProvisioningSuccessHandler>(
-      OrchestratorServiceBindings.TENANT_PROVISIONING_SUCCESS_HANDLER,
-    ).toProvider(TenantProvisioningSuccessHandlerProvider);
-
-    this.bind<TenantProvisioningFailureHandler>(
-      OrchestratorServiceBindings.TENANT_PROVISIONING_FAILURE_HANDLER,
-    ).toProvider(TenantProvisioningSuccessHandlerProvider);
-
-    this.bind<TenantDeploymentHandler>(
-      OrchestratorServiceBindings.TENANT_DEPLOYMENT_HANDLER,
-    ).toProvider(TenantDeploymentProvider);
-
     this.bind(OrchestratorServiceBindings.TIER_DETAILS_PROVIDER).toProvider(
       TierDetailsProvider,
-    );
-
-    this.bind(OrchestratorServiceBindings.ORCHESTRATOR_SERVICE).toClass(
-      OrchestratorService,
     );
     this.bind(OrchestratorServiceBindings.BUILDER_SERVICE).toClass(
       AwsCodeBuildService,
@@ -69,6 +37,7 @@ export class OrchestratorServiceApplication extends BootMixin(
       TenantRegistrationProvider,
     );
     this.component(OrchestratorServiceComponent);
+    this.component(EventBridgeConnector);
 
     // Set up the custom sequence
     this.sequence(MySequence);
