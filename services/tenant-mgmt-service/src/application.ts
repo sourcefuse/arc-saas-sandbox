@@ -27,9 +27,14 @@ import path from 'path';
 import * as openapi from './openapi.json';
 import {
   EventConnectorBinding,
+  TenantManagementServiceBindings,
   TenantManagementServiceComponent,
 } from '@sourceloop/ctrl-plane-tenant-management-service';
 import {EventConnector} from './services/event.service';
+import {
+  EventBridgeConnector,
+  EventBridgeStreamBindings,
+} from 'loopback4-message-bus-connector';
 
 export {ApplicationConfig};
 
@@ -73,6 +78,10 @@ export class TntMngmtApplication extends BootMixin(
       swaggerPassword: process.env.SWAGGER_PASSWORD,
     };
     this.bind(SFCoreBindings.config).to(obj);
+    this.bind(EventBridgeStreamBindings.Config).to({
+      source: 'ARC-SAAS',
+    });
+    this.component(EventBridgeConnector);
 
     // Set up the custom sequence
     this.sequence(ServiceSequence);
@@ -80,11 +89,16 @@ export class TntMngmtApplication extends BootMixin(
     // Add authentication component
     this.component(AuthenticationComponent);
     this.bind(EventConnectorBinding).toClass(EventConnector);
+    this.bind(TenantManagementServiceBindings.Config).to({
+      useCustomSequence: true,
+    });
+
     this.component(TenantManagementServiceComponent);
 
     // Add bearer verifier component
     this.bind(BearerVerifierBindings.Config).to({
       type: BearerVerifierType.service,
+      useSymmetricEncryption: true,
     } as BearerVerifierConfig);
     this.component(BearerVerifierComponent);
 
