@@ -1,10 +1,10 @@
-/* Replace with your SQL commands */
+
 CREATE SCHEMA IF NOT EXISTS main;
 
-SET search_path TO main,public;
+SET search_path TO main, public;
 GRANT ALL ON SCHEMA main TO public;
 
-CREATE TABLE main.features (
+CREATE TABLE IF NOT EXISTS main.features (
 	id                   uuid DEFAULT md5(random()::text || clock_timestamp()::text)::uuid NOT NULL,
 	name            	 text  NOT NULL ,
 	key            		 text  NOT NULL ,
@@ -22,7 +22,7 @@ CREATE TABLE main.features (
 	CONSTRAINT pk_features_id PRIMARY KEY ( id )
  );
 
- CREATE TABLE main.strategies (
+ CREATE TABLE IF NOT EXISTS main.strategies (
 	id                   uuid DEFAULT md5(random()::text || clock_timestamp()::text)::uuid NOT NULL,
 	name            	 text  NOT NULL ,
 	key            		 text  NOT NULL ,
@@ -37,7 +37,7 @@ CREATE TABLE main.features (
 	CONSTRAINT pk_strategies_id PRIMARY KEY ( id )
  );
 
- CREATE TABLE main.feature_values (
+ CREATE TABLE IF NOT EXISTS main.feature_values (
 	id                   	uuid DEFAULT md5(random()::text || clock_timestamp()::text)::uuid NOT NULL,
 	feature_key             varchar(50)  NOT NULL ,
 	strategy_key            varchar(50)  NOT NULL ,

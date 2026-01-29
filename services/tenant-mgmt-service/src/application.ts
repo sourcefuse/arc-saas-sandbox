@@ -79,7 +79,7 @@ export class TntMngmtApplication extends BootMixin(
     };
     this.bind(SFCoreBindings.config).to(obj);
     this.bind(EventBridgeStreamBindings.Config).to({
-      source: 'ARC-SAAS',
+      source: 'TenantManagementService',
     });
     this.component(EventBridgeConnector);
 

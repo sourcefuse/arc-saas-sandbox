@@ -1,4 +1,6 @@
-CREATE TABLE plan_items ( 
+
+CREATE SCHEMA IF NOT EXISTS main;
+CREATE TABLE IF NOT EXISTS main.plan_items ( 
 	id                   uuid DEFAULT (md5(((random())::text || (clock_timestamp())::text)))::uuid NOT NULL  ,
 	created_on           timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL  ,
 	modified_on          timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL  ,
@@ -12,5 +14,5 @@ CREATE TABLE plan_items (
 	plan_id              uuid  NOT NULL  ,
     value                jsonb NOT NULL,
 	CONSTRAINT pk_plan_items_id PRIMARY KEY ( id ),
-	CONSTRAINT fk_plan_items_plans FOREIGN KEY ( plan_id ) REFERENCES plans( id )   
+	CONSTRAINT fk_plan_items_plans FOREIGN KEY ( plan_id ) REFERENCES main.plans( id )   
 );

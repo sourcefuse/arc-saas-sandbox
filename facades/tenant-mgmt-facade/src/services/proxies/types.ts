@@ -57,7 +57,8 @@ export type CustomerDtoType = {
 export interface PaymentSourceDtoType {
   id?: string;
   customerId: string;
-  card: ICard;
+  card?: ICard;
+  options: AnyObject;
 }
 
 export interface ICard {

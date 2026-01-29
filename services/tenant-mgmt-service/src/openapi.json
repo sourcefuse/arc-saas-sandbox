@@ -5,8 +5,7 @@
     "version": "1.0.0",
     "description": "tenant-mgmt-service",
     "contact": {
-      "name": "Tyagi-Sunny",
-      "email": "sunny.tyagi@sourcefuse.com"
+      "name": "SourceFuse"
     }
   },
   "paths": {
@@ -1186,6 +1185,36 @@
         "operationId": "LeadController.find"
       }
     },
+    "/manage/users": {
+      "post": {
+        "x-controller-name": "IdpController",
+        "x-operation-name": "idpConfigure",
+        "tags": [
+          "IdpController"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Webhook success"
+          }
+        },
+        "description": "",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IdpDetailsDTO"
+              }
+            }
+          }
+        },
+        "operationId": "IdpController.idpConfigure"
+      }
+    },
     "/ping": {
       "get": {
         "x-controller-name": "PingController",
@@ -1961,6 +1990,36 @@
         "operationId": "TenantController.find"
       }
     },
+    "/webhook": {
+      "post": {
+        "x-controller-name": "WebhookController",
+        "x-operation-name": "webhook",
+        "tags": [
+          "WebhookController"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Webhook success"
+          }
+        },
+        "description": "",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookDTO"
+              }
+            }
+          }
+        },
+        "operationId": "WebhookController.webhook"
+      }
+    },
     "/": {
       "get": {
         "x-controller-name": "HomePageController",
@@ -1994,10 +2053,369 @@
       }
     },
     "schemas": {
-      "Contact": {
-        "title": "Contact",
+      "Tenant": {
+        "title": "Tenant",
         "type": "object",
-        "description": "contacts belonging to a tenant",
+        "description": "main model of the service that represents a tenant in the system, either pooled or siloed",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "deletedOn": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "deletedBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "modifiedBy": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "description": "name of the tenant"
+          },
+          "status": {
+            "type": "number",
+            "description": "status of a tenant, it can be - 0(active), 1(provisioning),2(deprovisioning),3(inactive)",
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "key": {
+            "type": "string",
+            "description": "a short string used to identify a tenant. This is also used as the namespace and subdomain for this particular tenant",
+            "pattern": "^[a-z0-9]+$",
+            "maxLength": 10
+          },
+          "spocUserId": {
+            "type": "string",
+            "description": "user id of the admin user who acts as a spoc for this tenant."
+          },
+          "domains": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "array of domains that are allowed for this tenant"
+            }
+          },
+          "leadId": {
+            "type": "string",
+            "description": "id of the lead from which this tenant was generated. this is optional as a tenant can be created without this lead."
+          },
+          "addressId": {
+            "type": "string",
+            "description": "id of the address of the tenant"
+          }
+        },
+        "required": [
+          "name",
+          "status",
+          "key",
+          "domains"
+        ],
+        "additionalProperties": false
+      },
+      "NewTenantOnboarding": {
+        "title": "NewTenantOnboarding",
+        "type": "object",
+        "description": "model describing payload used to create and onboard a tenant (tsType: Omit<TenantOnboardDTO, >, schemaOptions: { title: 'NewTenantOnboarding', exclude: [] })",
+        "properties": {
+          "contact": {
+            "type": "object",
+            "description": "contacts belonging to a tenant (tsType: Omit<Contact, 'tenantId' | 'id'>, schemaOptions: { exclude: [ 'tenantId', 'id' ] })",
+            "title": "ContactExcluding_tenantId-id_",
+            "properties": {
+              "deleted": {
+                "type": "boolean"
+              },
+              "deletedOn": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+              },
+              "deletedBy": {
+                "type": "string",
+                "nullable": true
+              },
+              "createdOn": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "modifiedOn": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "createdBy": {
+                "type": "string"
+              },
+              "modifiedBy": {
+                "type": "string"
+              },
+              "firstName": {
+                "type": "string",
+                "description": "first name of the lead"
+              },
+              "lastName": {
+                "type": "string",
+                "description": "last name of the lead"
+              },
+              "email": {
+                "type": "string",
+                "description": "email id of the contact"
+              },
+              "isPrimary": {
+                "type": "boolean",
+                "description": "boolean value denoting if the contact is a primary contact for it's tenant."
+              },
+              "type": {
+                "type": "string",
+                "description": "type of the contact"
+              }
+            },
+            "required": [
+              "firstName",
+              "lastName",
+              "email",
+              "isPrimary"
+            ],
+            "additionalProperties": false
+          },
+          "name": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string",
+            "description": "address of the tenant owners"
+          },
+          "city": {
+            "type": "string",
+            "description": "city of the tenant owner"
+          },
+          "state": {
+            "type": "string",
+            "description": "state of the tenant owner"
+          },
+          "zip": {
+            "type": "string",
+            "description": "zip code of the tenant owner"
+          },
+          "country": {
+            "type": "string",
+            "description": "country of the tenant owner"
+          },
+          "key": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+$",
+            "maxLength": 10
+          },
+          "domains": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "format": "hostname"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "key",
+          "domains"
+        ],
+        "additionalProperties": false
+      },
+      "TenantOnboardDTO": {
+        "title": "TenantOnboardDTO",
+        "type": "object",
+        "description": "model describing payload used to create and onboard a tenant",
+        "properties": {
+          "contact": {
+            "type": "object",
+            "description": "contacts belonging to a tenant (tsType: Omit<Contact, 'tenantId' | 'id'>, schemaOptions: { exclude: [ 'tenantId', 'id' ] })",
+            "title": "ContactExcluding_tenantId-id_",
+            "properties": {
+              "deleted": {
+                "type": "boolean"
+              },
+              "deletedOn": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+              },
+              "deletedBy": {
+                "type": "string",
+                "nullable": true
+              },
+              "createdOn": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "modifiedOn": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "createdBy": {
+                "type": "string"
+              },
+              "modifiedBy": {
+                "type": "string"
+              },
+              "firstName": {
+                "type": "string",
+                "description": "first name of the lead"
+              },
+              "lastName": {
+                "type": "string",
+                "description": "last name of the lead"
+              },
+              "email": {
+                "type": "string",
+                "description": "email id of the contact"
+              },
+              "isPrimary": {
+                "type": "boolean",
+                "description": "boolean value denoting if the contact is a primary contact for it's tenant."
+              },
+              "type": {
+                "type": "string",
+                "description": "type of the contact"
+              }
+            },
+            "required": [
+              "firstName",
+              "lastName",
+              "email",
+              "isPrimary"
+            ],
+            "additionalProperties": false
+          },
+          "name": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string",
+            "description": "address of the tenant owners"
+          },
+          "city": {
+            "type": "string",
+            "description": "city of the tenant owner"
+          },
+          "state": {
+            "type": "string",
+            "description": "state of the tenant owner"
+          },
+          "zip": {
+            "type": "string",
+            "description": "zip code of the tenant owner"
+          },
+          "country": {
+            "type": "string",
+            "description": "country of the tenant owner"
+          },
+          "key": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+$",
+            "maxLength": 10
+          },
+          "domains": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "format": "hostname"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "key",
+          "domains"
+        ],
+        "additionalProperties": false
+      },
+      "SubscriptionDTO": {
+        "title": "SubscriptionDTO",
+        "type": "object",
+        "description": "(tsType: SubscriptionDTO, schemaOptions: { title: 'SubscriptionDTO' })",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "deletedOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "deletedBy": {
+            "type": "string"
+          },
+          "createdOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "modifiedBy": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "subscriberId": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string"
+          },
+          "endDate": {
+            "type": "string"
+          },
+          "status": {
+            "type": "number"
+          },
+          "planId": {
+            "type": "string"
+          },
+          "invoiceId": {
+            "type": "string"
+          },
+          "plan": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "x-typescript-type": "SubscriptionDTO"
+      },
+      "ContactWithRelations": {
+        "title": "ContactWithRelations",
+        "type": "object",
+        "description": "contacts belonging to a tenant (tsType: ContactWithRelations, schemaOptions: { includeRelations: true })",
         "properties": {
           "deleted": {
             "type": "boolean"
@@ -2051,71 +2469,11 @@
           "tenantId": {
             "type": "string",
             "description": "tenant id this contact belongs to"
-          }
-        },
-        "required": [
-          "firstName",
-          "lastName",
-          "email",
-          "isPrimary"
-        ],
-        "additionalProperties": false
-      },
-      "NewContact": {
-        "title": "NewContact",
-        "type": "object",
-        "description": "contacts belonging to a tenant (tsType: Omit<Contact, 'id'>, schemaOptions: { title: 'NewContact', exclude: [ 'id' ] })",
-        "properties": {
-          "deleted": {
-            "type": "boolean"
           },
-          "deletedOn": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
+          "tenant": {
+            "$ref": "#/components/schemas/TenantWithRelations"
           },
-          "deletedBy": {
-            "type": "string",
-            "nullable": true
-          },
-          "createdOn": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "modifiedOn": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "createdBy": {
-            "type": "string"
-          },
-          "modifiedBy": {
-            "type": "string"
-          },
-          "firstName": {
-            "type": "string",
-            "description": "first name of the lead"
-          },
-          "lastName": {
-            "type": "string",
-            "description": "last name of the lead"
-          },
-          "email": {
-            "type": "string",
-            "description": "email id of the contact"
-          },
-          "isPrimary": {
-            "type": "boolean",
-            "description": "boolean value denoting if the contact is a primary contact for it's tenant."
-          },
-          "type": {
-            "type": "string",
-            "description": "type of the contact"
-          },
-          "tenantId": {
-            "type": "string",
-            "description": "tenant id this contact belongs to"
-          }
+          "foreignKey": {}
         },
         "required": [
           "firstName",
@@ -2425,10 +2783,88 @@
         ],
         "additionalProperties": false
       },
-      "ContactWithRelations": {
-        "title": "ContactWithRelations",
+      "TenantPartial": {
+        "title": "TenantPartial",
         "type": "object",
-        "description": "contacts belonging to a tenant (tsType: ContactWithRelations, schemaOptions: { includeRelations: true })",
+        "description": "main model of the service that represents a tenant in the system, either pooled or siloed (tsType: Partial<Tenant>, schemaOptions: { partial: true })",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "deletedOn": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "deletedBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "modifiedBy": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "description": "name of the tenant"
+          },
+          "status": {
+            "type": "number",
+            "description": "status of a tenant, it can be - 0(active), 1(provisioning),2(deprovisioning),3(inactive)",
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "key": {
+            "type": "string",
+            "description": "a short string used to identify a tenant. This is also used as the namespace and subdomain for this particular tenant",
+            "pattern": "^[a-z0-9]+$",
+            "maxLength": 10
+          },
+          "spocUserId": {
+            "type": "string",
+            "description": "user id of the admin user who acts as a spoc for this tenant."
+          },
+          "domains": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "array of domains that are allowed for this tenant"
+            }
+          },
+          "leadId": {
+            "type": "string",
+            "description": "id of the lead from which this tenant was generated. this is optional as a tenant can be created without this lead."
+          },
+          "addressId": {
+            "type": "string",
+            "description": "id of the address of the tenant"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Lead": {
+        "title": "Lead",
+        "type": "object",
+        "description": "this model represents a lead that could eventually be a tenant in the system",
         "properties": {
           "deleted": {
             "type": "boolean"
@@ -2467,39 +2903,163 @@
             "type": "string",
             "description": "last name of the lead"
           },
+          "companyName": {
+            "type": "string",
+            "description": "name of the lead's company"
+          },
           "email": {
             "type": "string",
-            "description": "email id of the contact"
+            "description": "email of the lead"
           },
-          "isPrimary": {
+          "isValidated": {
             "type": "boolean",
-            "description": "boolean value denoting if the contact is a primary contact for it's tenant."
+            "description": "whether the lead`s email has been validated or not"
           },
-          "type": {
+          "addressId": {
             "type": "string",
-            "description": "type of the contact"
-          },
-          "tenantId": {
-            "type": "string",
-            "description": "tenant id this contact belongs to"
-          },
-          "tenant": {
-            "$ref": "#/components/schemas/TenantWithRelations"
-          },
-          "foreignKey": {}
+            "description": "id of the address of the lead"
+          }
         },
         "required": [
           "firstName",
           "lastName",
+          "companyName",
           "email",
-          "isPrimary"
+          "isValidated"
         ],
         "additionalProperties": false
       },
-      "ContactPartial": {
-        "title": "ContactPartial",
+      "CreateLeadDTO": {
+        "title": "CreateLeadDTO",
         "type": "object",
-        "description": "contacts belonging to a tenant (tsType: Partial<Contact>, schemaOptions: { partial: true })",
+        "description": "model describing payload used to create a lead (tsType: Omit<CreateLeadDTO, 'isValidated' | 'addressId' | 'id'>, schemaOptions: { title: 'CreateLeadDTO', exclude: [ 'isValidated', 'addressId', 'id' ] })",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "deletedOn": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "deletedBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "modifiedBy": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "first name of the lead"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "last name of the lead"
+          },
+          "companyName": {
+            "type": "string",
+            "description": "name of the lead's company"
+          },
+          "email": {
+            "type": "string",
+            "description": "email of the lead"
+          },
+          "address": {
+            "type": "object",
+            "description": "this model represents the address of a company or lead (tsType: @loopback/repository-json-schema#Optional<Omit<Address, 'id'>, 'country'>, schemaOptions: { exclude: [ 'id' ], optional: [ 'country' ] })",
+            "title": "AddressOptional_country_Excluding_id_",
+            "properties": {
+              "deleted": {
+                "type": "boolean"
+              },
+              "deletedOn": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+              },
+              "deletedBy": {
+                "type": "string",
+                "nullable": true
+              },
+              "createdOn": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "modifiedOn": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "createdBy": {
+                "type": "string"
+              },
+              "modifiedBy": {
+                "type": "string"
+              },
+              "address": {
+                "type": "string",
+                "description": "address of the company"
+              },
+              "city": {
+                "type": "string",
+                "description": "city of the company"
+              },
+              "state": {
+                "type": "string",
+                "description": "state of the company"
+              },
+              "zip": {
+                "type": "string",
+                "description": "zip code of the company"
+              },
+              "country": {
+                "type": "string",
+                "description": "country of the company"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "companyName",
+          "email"
+        ],
+        "additionalProperties": false
+      },
+      "VerifyLeadResponseDTO": {
+        "title": "VerifyLeadResponseDTO",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "token"
+        ],
+        "additionalProperties": false
+      },
+      "LeadPartial": {
+        "title": "LeadPartial",
+        "type": "object",
+        "description": "this model represents a lead that could eventually be a tenant in the system (tsType: Partial<Lead>, schemaOptions: { partial: true })",
         "properties": {
           "deleted": {
             "type": "boolean"
@@ -2538,23 +3098,71 @@
             "type": "string",
             "description": "last name of the lead"
           },
+          "companyName": {
+            "type": "string",
+            "description": "name of the lead's company"
+          },
           "email": {
             "type": "string",
-            "description": "email id of the contact"
+            "description": "email of the lead"
           },
-          "isPrimary": {
+          "isValidated": {
             "type": "boolean",
-            "description": "boolean value denoting if the contact is a primary contact for it's tenant."
+            "description": "whether the lead`s email has been validated or not"
           },
-          "type": {
+          "addressId": {
             "type": "string",
-            "description": "type of the contact"
-          },
-          "tenantId": {
-            "type": "string",
-            "description": "tenant id this contact belongs to"
+            "description": "id of the address of the lead"
           }
         },
+        "additionalProperties": false
+      },
+      "TenantOnboardDto": {
+        "title": "TenantOnboardDto",
+        "type": "object",
+        "description": "model describing payload used to create and onboard a tenant (tsType: @loopback/repository-json-schema#Optional<Omit<TenantOnboardDTO, 'contact'>, 'name'>, schemaOptions: { title: 'TenantOnboardDto', exclude: [ 'contact' ], optional: [ 'name' ] })",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string",
+            "description": "address of the tenant owners"
+          },
+          "city": {
+            "type": "string",
+            "description": "city of the tenant owner"
+          },
+          "state": {
+            "type": "string",
+            "description": "state of the tenant owner"
+          },
+          "zip": {
+            "type": "string",
+            "description": "zip code of the tenant owner"
+          },
+          "country": {
+            "type": "string",
+            "description": "country of the tenant owner"
+          },
+          "key": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+$",
+            "maxLength": 10
+          },
+          "domains": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "format": "hostname"
+            }
+          }
+        },
+        "required": [
+          "key",
+          "domains"
+        ],
         "additionalProperties": false
       },
       "Invoice": {
@@ -2893,142 +3501,10 @@
         },
         "additionalProperties": false
       },
-      "Tenant": {
-        "title": "Tenant",
+      "Contact": {
+        "title": "Contact",
         "type": "object",
-        "description": "main model of the service that represents a tenant in the system, either pooled or siloed",
-        "properties": {
-          "deleted": {
-            "type": "boolean"
-          },
-          "deletedOn": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "deletedBy": {
-            "type": "string",
-            "nullable": true
-          },
-          "createdOn": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "modifiedOn": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "createdBy": {
-            "type": "string"
-          },
-          "modifiedBy": {
-            "type": "string"
-          },
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string",
-            "description": "name of the tenant"
-          },
-          "status": {
-            "type": "number",
-            "description": "status of a tenant, it can be - 0(active), 1(provisioning),2(deprovisioning),3(inactive)",
-            "enum": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5
-            ]
-          },
-          "key": {
-            "type": "string",
-            "description": "a short string used to identify a tenant. This is also used as the namespace and subdomain for this particular tenant",
-            "pattern": "^[a-z0-9]+$",
-            "maxLength": 10
-          },
-          "spocUserId": {
-            "type": "string",
-            "description": "user id of the admin user who acts as a spoc for this tenant."
-          },
-          "domains": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "description": "array of domains that are allowed for this tenant"
-            }
-          },
-          "leadId": {
-            "type": "string",
-            "description": "id of the lead from which this tenant was generated. this is optional as a tenant can be created without this lead."
-          },
-          "addressId": {
-            "type": "string",
-            "description": "id of the address of the tenant"
-          }
-        },
-        "required": [
-          "name",
-          "status",
-          "key",
-          "domains"
-        ],
-        "additionalProperties": false
-      },
-      "TenantOnboardDto": {
-        "title": "TenantOnboardDto",
-        "type": "object",
-        "description": "model describing payload used to create and onboard a tenant (tsType: @loopback/repository-json-schema#Optional<Omit<TenantOnboardDTO, 'contact'>, 'name'>, schemaOptions: { title: 'TenantOnboardDto', exclude: [ 'contact' ], optional: [ 'name' ] })",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "address": {
-            "type": "string",
-            "description": "address of the tenant owners"
-          },
-          "city": {
-            "type": "string",
-            "description": "city of the tenant owner"
-          },
-          "state": {
-            "type": "string",
-            "description": "state of the tenant owner"
-          },
-          "zip": {
-            "type": "string",
-            "description": "zip code of the tenant owner"
-          },
-          "country": {
-            "type": "string",
-            "description": "country of the tenant owner"
-          },
-          "key": {
-            "type": "string",
-            "pattern": "^[a-z0-9]+$",
-            "maxLength": 10
-          },
-          "domains": {
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-              "type": "string",
-              "format": "hostname"
-            }
-          }
-        },
-        "required": [
-          "key",
-          "domains"
-        ],
-        "additionalProperties": false
-      },
-      "Lead": {
-        "title": "Lead",
-        "type": "object",
-        "description": "this model represents a lead that could eventually be a tenant in the system",
+        "description": "contacts belonging to a tenant",
         "properties": {
           "deleted": {
             "type": "boolean"
@@ -3067,36 +3543,35 @@
             "type": "string",
             "description": "last name of the lead"
           },
-          "companyName": {
-            "type": "string",
-            "description": "name of the lead's company"
-          },
           "email": {
             "type": "string",
-            "description": "email of the lead"
+            "description": "email id of the contact"
           },
-          "isValidated": {
+          "isPrimary": {
             "type": "boolean",
-            "description": "whether the lead`s email has been validated or not"
+            "description": "boolean value denoting if the contact is a primary contact for it's tenant."
           },
-          "addressId": {
+          "type": {
             "type": "string",
-            "description": "id of the address of the lead"
+            "description": "type of the contact"
+          },
+          "tenantId": {
+            "type": "string",
+            "description": "tenant id this contact belongs to"
           }
         },
         "required": [
           "firstName",
           "lastName",
-          "companyName",
           "email",
-          "isValidated"
+          "isPrimary"
         ],
         "additionalProperties": false
       },
-      "CreateLeadDTO": {
-        "title": "CreateLeadDTO",
+      "NewContact": {
+        "title": "NewContact",
         "type": "object",
-        "description": "model describing payload used to create a lead (tsType: Omit<CreateLeadDTO, 'isValidated' | 'addressId' | 'id'>, schemaOptions: { title: 'CreateLeadDTO', exclude: [ 'isValidated', 'addressId', 'id' ] })",
+        "description": "contacts belonging to a tenant (tsType: Omit<Contact, 'id'>, schemaOptions: { title: 'NewContact', exclude: [ 'id' ] })",
         "properties": {
           "deleted": {
             "type": "boolean"
@@ -3132,98 +3607,35 @@
             "type": "string",
             "description": "last name of the lead"
           },
-          "companyName": {
-            "type": "string",
-            "description": "name of the lead's company"
-          },
           "email": {
             "type": "string",
-            "description": "email of the lead"
+            "description": "email id of the contact"
           },
-          "address": {
-            "type": "object",
-            "description": "this model represents the address of a company or lead (tsType: @loopback/repository-json-schema#Optional<Omit<Address, 'id'>, 'country'>, schemaOptions: { exclude: [ 'id' ], optional: [ 'country' ] })",
-            "title": "AddressOptional_country_Excluding_id_",
-            "properties": {
-              "deleted": {
-                "type": "boolean"
-              },
-              "deletedOn": {
-                "type": "string",
-                "format": "date-time",
-                "nullable": true
-              },
-              "deletedBy": {
-                "type": "string",
-                "nullable": true
-              },
-              "createdOn": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "modifiedOn": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "createdBy": {
-                "type": "string"
-              },
-              "modifiedBy": {
-                "type": "string"
-              },
-              "address": {
-                "type": "string",
-                "description": "address of the company"
-              },
-              "city": {
-                "type": "string",
-                "description": "city of the company"
-              },
-              "state": {
-                "type": "string",
-                "description": "state of the company"
-              },
-              "zip": {
-                "type": "string",
-                "description": "zip code of the company"
-              },
-              "country": {
-                "type": "string",
-                "description": "country of the company"
-              }
-            },
-            "additionalProperties": false
+          "isPrimary": {
+            "type": "boolean",
+            "description": "boolean value denoting if the contact is a primary contact for it's tenant."
+          },
+          "type": {
+            "type": "string",
+            "description": "type of the contact"
+          },
+          "tenantId": {
+            "type": "string",
+            "description": "tenant id this contact belongs to"
           }
         },
         "required": [
           "firstName",
           "lastName",
-          "companyName",
-          "email"
+          "email",
+          "isPrimary"
         ],
         "additionalProperties": false
       },
-      "VerifyLeadResponseDTO": {
-        "title": "VerifyLeadResponseDTO",
+      "ContactPartial": {
+        "title": "ContactPartial",
         "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "token": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "token"
-        ],
-        "additionalProperties": false
-      },
-      "LeadPartial": {
-        "title": "LeadPartial",
-        "type": "object",
-        "description": "this model represents a lead that could eventually be a tenant in the system (tsType: Partial<Lead>, schemaOptions: { partial: true })",
+        "description": "contacts belonging to a tenant (tsType: Partial<Contact>, schemaOptions: { partial: true })",
         "properties": {
           "deleted": {
             "type": "boolean"
@@ -3262,377 +3674,47 @@
             "type": "string",
             "description": "last name of the lead"
           },
-          "companyName": {
-            "type": "string",
-            "description": "name of the lead's company"
-          },
           "email": {
             "type": "string",
-            "description": "email of the lead"
+            "description": "email id of the contact"
           },
-          "isValidated": {
+          "isPrimary": {
             "type": "boolean",
-            "description": "whether the lead`s email has been validated or not"
+            "description": "boolean value denoting if the contact is a primary contact for it's tenant."
           },
-          "addressId": {
+          "type": {
             "type": "string",
-            "description": "id of the address of the lead"
+            "description": "type of the contact"
+          },
+          "tenantId": {
+            "type": "string",
+            "description": "tenant id this contact belongs to"
           }
         },
         "additionalProperties": false
       },
-      "NewTenantOnboarding": {
-        "title": "NewTenantOnboarding",
+      "WebhookDTO": {
+        "title": "WebhookDTO",
         "type": "object",
-        "description": "model describing payload used to create and onboard a tenant (tsType: Omit<TenantOnboardDTO, >, schemaOptions: { title: 'NewTenantOnboarding', exclude: [] })",
+        "description": "(tsType: WebhookDTO, schemaOptions: { title: 'WebhookDTO' })",
         "properties": {
-          "contact": {
-            "type": "object",
-            "description": "contacts belonging to a tenant (tsType: Omit<Contact, 'tenantId' | 'id'>, schemaOptions: { exclude: [ 'tenantId', 'id' ] })",
-            "title": "ContactExcluding_tenantId-id_",
-            "properties": {
-              "deleted": {
-                "type": "boolean"
-              },
-              "deletedOn": {
-                "type": "string",
-                "format": "date-time",
-                "nullable": true
-              },
-              "deletedBy": {
-                "type": "string",
-                "nullable": true
-              },
-              "createdOn": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "modifiedOn": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "createdBy": {
-                "type": "string"
-              },
-              "modifiedBy": {
-                "type": "string"
-              },
-              "firstName": {
-                "type": "string",
-                "description": "first name of the lead"
-              },
-              "lastName": {
-                "type": "string",
-                "description": "last name of the lead"
-              },
-              "email": {
-                "type": "string",
-                "description": "email id of the contact"
-              },
-              "isPrimary": {
-                "type": "boolean",
-                "description": "boolean value denoting if the contact is a primary contact for it's tenant."
-              },
-              "type": {
-                "type": "string",
-                "description": "type of the contact"
-              }
-            },
-            "required": [
-              "firstName",
-              "lastName",
-              "email",
-              "isPrimary"
-            ],
-            "additionalProperties": false
-          },
-          "name": {
+          "initiatorId": {
             "type": "string"
           },
-          "address": {
-            "type": "string",
-            "description": "address of the tenant owners"
-          },
-          "city": {
-            "type": "string",
-            "description": "city of the tenant owner"
-          },
-          "state": {
-            "type": "string",
-            "description": "state of the tenant owner"
-          },
-          "zip": {
-            "type": "string",
-            "description": "zip code of the tenant owner"
-          },
-          "country": {
-            "type": "string",
-            "description": "country of the tenant owner"
-          },
-          "key": {
-            "type": "string",
-            "pattern": "^[a-z0-9]+$",
-            "maxLength": 10
-          },
-          "domains": {
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-              "type": "string",
-              "format": "hostname"
-            }
-          }
-        },
-        "required": [
-          "name",
-          "key",
-          "domains"
-        ],
-        "additionalProperties": false
-      },
-      "TenantOnboardDTO": {
-        "title": "TenantOnboardDTO",
-        "type": "object",
-        "description": "model describing payload used to create and onboard a tenant",
-        "properties": {
-          "contact": {
-            "type": "object",
-            "description": "contacts belonging to a tenant (tsType: Omit<Contact, 'tenantId' | 'id'>, schemaOptions: { exclude: [ 'tenantId', 'id' ] })",
-            "title": "ContactExcluding_tenantId-id_",
-            "properties": {
-              "deleted": {
-                "type": "boolean"
-              },
-              "deletedOn": {
-                "type": "string",
-                "format": "date-time",
-                "nullable": true
-              },
-              "deletedBy": {
-                "type": "string",
-                "nullable": true
-              },
-              "createdOn": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "modifiedOn": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "createdBy": {
-                "type": "string"
-              },
-              "modifiedBy": {
-                "type": "string"
-              },
-              "firstName": {
-                "type": "string",
-                "description": "first name of the lead"
-              },
-              "lastName": {
-                "type": "string",
-                "description": "last name of the lead"
-              },
-              "email": {
-                "type": "string",
-                "description": "email id of the contact"
-              },
-              "isPrimary": {
-                "type": "boolean",
-                "description": "boolean value denoting if the contact is a primary contact for it's tenant."
-              },
-              "type": {
-                "type": "string",
-                "description": "type of the contact"
-              }
-            },
-            "required": [
-              "firstName",
-              "lastName",
-              "email",
-              "isPrimary"
-            ],
-            "additionalProperties": false
-          },
-          "name": {
-            "type": "string"
-          },
-          "address": {
-            "type": "string",
-            "description": "address of the tenant owners"
-          },
-          "city": {
-            "type": "string",
-            "description": "city of the tenant owner"
-          },
-          "state": {
-            "type": "string",
-            "description": "state of the tenant owner"
-          },
-          "zip": {
-            "type": "string",
-            "description": "zip code of the tenant owner"
-          },
-          "country": {
-            "type": "string",
-            "description": "country of the tenant owner"
-          },
-          "key": {
-            "type": "string",
-            "pattern": "^[a-z0-9]+$",
-            "maxLength": 10
-          },
-          "domains": {
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-              "type": "string",
-              "format": "hostname"
-            }
-          }
-        },
-        "required": [
-          "name",
-          "key",
-          "domains"
-        ],
-        "additionalProperties": false
-      },
-      "SubscriptionDTO": {
-        "title": "SubscriptionDTO",
-        "type": "object",
-        "description": "(tsType: SubscriptionDTO, schemaOptions: { title: 'SubscriptionDTO' })",
-        "properties": {
-          "deleted": {
-            "type": "boolean"
-          },
-          "deletedOn": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "deletedBy": {
-            "type": "string"
-          },
-          "createdOn": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "modifiedOn": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "createdBy": {
-            "type": "string"
-          },
-          "modifiedBy": {
-            "type": "string"
-          },
-          "id": {
-            "type": "string"
-          },
-          "subscriberId": {
-            "type": "string"
-          },
-          "startDate": {
-            "type": "string"
-          },
-          "endDate": {
-            "type": "string"
-          },
-          "status": {
-            "type": "number"
-          },
-          "planId": {
-            "type": "string"
-          },
-          "invoiceId": {
-            "type": "string"
-          },
-          "plan": {
+          "data": {
             "type": "object"
+          },
+          "type": {
+            "type": "number"
           }
         },
+        "required": [
+          "initiatorId",
+          "data",
+          "type"
+        ],
         "additionalProperties": false,
-        "x-typescript-type": "SubscriptionDTO"
-      },
-      "TenantPartial": {
-        "title": "TenantPartial",
-        "type": "object",
-        "description": "main model of the service that represents a tenant in the system, either pooled or siloed (tsType: Partial<Tenant>, schemaOptions: { partial: true })",
-        "properties": {
-          "deleted": {
-            "type": "boolean"
-          },
-          "deletedOn": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "deletedBy": {
-            "type": "string",
-            "nullable": true
-          },
-          "createdOn": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "modifiedOn": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "createdBy": {
-            "type": "string"
-          },
-          "modifiedBy": {
-            "type": "string"
-          },
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string",
-            "description": "name of the tenant"
-          },
-          "status": {
-            "type": "number",
-            "description": "status of a tenant, it can be - 0(active), 1(provisioning),2(deprovisioning),3(inactive)",
-            "enum": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5
-            ]
-          },
-          "key": {
-            "type": "string",
-            "description": "a short string used to identify a tenant. This is also used as the namespace and subdomain for this particular tenant",
-            "pattern": "^[a-z0-9]+$",
-            "maxLength": 10
-          },
-          "spocUserId": {
-            "type": "string",
-            "description": "user id of the admin user who acts as a spoc for this tenant."
-          },
-          "domains": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "description": "array of domains that are allowed for this tenant"
-            }
-          },
-          "leadId": {
-            "type": "string",
-            "description": "id of the lead from which this tenant was generated. this is optional as a tenant can be created without this lead."
-          },
-          "addressId": {
-            "type": "string",
-            "description": "id of the address of the tenant"
-          }
-        },
-        "additionalProperties": false
+        "x-typescript-type": "WebhookDTO"
       },
       "TenantMgmtConfig": {
         "title": "TenantMgmtConfig",
@@ -3834,6 +3916,22 @@
           "tenantId": {
             "type": "string",
             "description": "id of the tenant this invoice is generated for"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IdpDetailsDTO": {
+        "title": "IdpDetailsDTO",
+        "type": "object",
+        "description": "model describing payload for IDP controller (tsType: IdpDetailsDTO, schemaOptions: { title: 'IdpDetailsDTO' })",
+        "properties": {
+          "tenant": {
+            "type": "object",
+            "description": "Tenat object"
+          },
+          "plan": {
+            "type": "object",
+            "description": "plan object"
           }
         },
         "additionalProperties": false

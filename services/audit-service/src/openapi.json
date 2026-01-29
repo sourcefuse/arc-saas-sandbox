@@ -5,8 +5,7 @@
     "version": "1.0.0",
     "description": "audit-service",
     "contact": {
-      "name": "Tyagi-Sunny",
-      "email": "sunny.tyagi@sourcefuse.com"
+      "name": "SourceFuse"
     }
   },
   "paths": {
@@ -416,9 +415,6 @@
           "actor": {
             "type": "string"
           },
-          "tenantId": {
-            "type": "string"
-          },
           "before": {
             "type": "object"
           },
@@ -426,6 +422,9 @@
             "type": "object"
           },
           "actionGroup": {
+            "type": "string"
+          },
+          "tenantId": {
             "type": "string"
           }
         },
@@ -497,13 +496,13 @@
           "operation": {
             "type": "string"
           },
-          "tenantId": {
-            "type": "string"
-          },
           "filterUsed": {
             "type": "object"
           },
           "result": {
+            "type": "string"
+          },
+          "tenantId": {
             "type": "string"
           }
         },
@@ -541,9 +540,6 @@
           "actor": {
             "type": "string"
           },
-          "tenantId": {
-            "type": "string"
-          },
           "before": {
             "type": "object"
           },
@@ -551,6 +547,9 @@
             "type": "object"
           },
           "actionGroup": {
+            "type": "string"
+          },
+          "tenantId": {
             "type": "string"
           }
         },
@@ -591,6 +590,20 @@
           },
           "actedOn": {
             "type": "string"
+          },
+          "actedOnList": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "actionGroupList": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
           }
         },
         "additionalProperties": false,
@@ -667,9 +680,6 @@
                   "actor": {
                     "type": "boolean"
                   },
-                  "tenantId": {
-                    "type": "boolean"
-                  },
                   "before": {
                     "type": "boolean"
                   },
@@ -677,6 +687,9 @@
                     "type": "boolean"
                   },
                   "actionGroup": {
+                    "type": "boolean"
+                  },
+                  "tenantId": {
                     "type": "boolean"
                   }
                 },
@@ -753,9 +766,6 @@
                   "actor": {
                     "type": "boolean"
                   },
-                  "tenantId": {
-                    "type": "boolean"
-                  },
                   "before": {
                     "type": "boolean"
                   },
@@ -763,6 +773,9 @@
                     "type": "boolean"
                   },
                   "actionGroup": {
+                    "type": "boolean"
+                  },
+                  "tenantId": {
                     "type": "boolean"
                   }
                 },

@@ -27,7 +27,7 @@ import {
   AuthorizationBindings,
   AuthorizationComponent,
 } from 'loopback4-authorization';
-import {AuthenticationServiceComponent} from '@sourceloop/authentication-service';
+import {AuthenticationServiceComponent, AuthServiceBindings} from '@sourceloop/authentication-service';
 import {HelmetSecurityBindings} from 'loopback4-helmet';
 import {RateLimitSecurityBindings} from 'loopback4-ratelimiter';
 import path from 'path';
@@ -103,7 +103,7 @@ export class TenantMgmtFacadeApplication extends BootMixin(
         maxAge: 31536000,
         includeSubDomains: true,
         preload: true,
-      },
+      }, 
     });
 
     this.bind(RateLimitSecurityBindings.CONFIG).to({
@@ -111,7 +111,10 @@ export class TenantMgmtFacadeApplication extends BootMixin(
       max: parseInt(process.env.RATE_LIMIT_REQUEST_CAP ?? '100'),
       keyGenerator: rateLimitKeyGen,
     });
-
+    this.bind(AuthServiceBindings.Config).to({
+      useCustomSequence: false,
+      useSymmetricEncryption: true,
+    })
     // Add authentication component
     this.component(AuthenticationComponent);
 
@@ -122,6 +125,7 @@ export class TenantMgmtFacadeApplication extends BootMixin(
     // Add bearer verifier component
     this.bind(BearerVerifierBindings.Config).to({
       type: BearerVerifierType.facade,
+      useSymmetricEncryption: true,
     } as BearerVerifierConfig);
     this.component(BearerVerifierComponent);
     // Add authorization component

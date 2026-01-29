@@ -1,2 +1,2 @@
 ALTER TABLE IF EXISTS main.plans
-    ADD COLUMN size text;
+ADD COLUMN IF NOT EXISTS size TEXT;

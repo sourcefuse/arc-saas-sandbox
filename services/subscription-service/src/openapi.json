@@ -5,8 +5,7 @@
     "version": "1.0.0",
     "description": "subscription-service",
     "contact": {
-      "name": "Tyagi-Sunny",
-      "email": "sunny.tyagi@sourcefuse.com"
+      "name": "SourceFuse"
     }
   },
   "paths": {
@@ -6406,6 +6405,9 @@
           "customerId": {
             "type": "string"
           },
+          "currencyCode": {
+            "type": "string"
+          },
           "options": {
             "type": "object"
           },
@@ -6430,6 +6432,9 @@
         "description": "(tsType: Omit<InvoiceDto, 'id' | 'status'>, schemaOptions: { title: 'newInvoice', exclude: [ 'id', 'status' ] })",
         "properties": {
           "customerId": {
+            "type": "string"
+          },
+          "currencyCode": {
             "type": "string"
           },
           "options": {
@@ -6457,6 +6462,9 @@
             "type": "string"
           },
           "customerId": {
+            "type": "string"
+          },
+          "currencyCode": {
             "type": "string"
           },
           "options": {
@@ -6639,11 +6647,11 @@
               "expiryYear",
               "cvv"
             ]
+          },
+          "options": {
+            "type": "object"
           }
         },
-        "required": [
-          "card"
-        ],
         "additionalProperties": false
       },
       "NewPaymentSource": {
@@ -6680,11 +6688,11 @@
               "expiryYear",
               "cvv"
             ]
+          },
+          "options": {
+            "type": "object"
           }
         },
-        "required": [
-          "card"
-        ],
         "additionalProperties": false,
         "x-typescript-type": "Omit<PaymentSourceDto, 'id'>"
       },

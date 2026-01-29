@@ -20,7 +20,7 @@ import {
   BearerVerifierType,
   SECURITY_SCHEME_SPEC,
 } from '@sourceloop/core';
-import {NotificationServiceComponent} from '@sourceloop/notification-service';
+import {NotificationServiceComponent, NotifServiceBindings} from '@sourceloop/notification-service';
 import {RepositoryMixin} from '@loopback/repository';
 import {RestApplication} from '@loopback/rest';
 import {ServiceMixin} from '@loopback/service-proxy';
@@ -78,6 +78,9 @@ export class NotificationService extends BootMixin(
 
     // Set up the custom sequence
     this.sequence(ServiceSequence);
+    this.bind(NotifServiceBindings.Config).to({
+    useCustomSequence: true,
+    })
 
     // Add authentication component
     this.component(AuthenticationComponent);
@@ -87,6 +90,7 @@ export class NotificationService extends BootMixin(
     // Add bearer verifier component
     this.bind(BearerVerifierBindings.Config).to({
       type: BearerVerifierType.service,
+      useSymmetricEncryption: true
     } as BearerVerifierConfig);
     this.component(BearerVerifierComponent);
     // Add authorization component

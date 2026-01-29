@@ -23,7 +23,7 @@
     "eslint": "eslint --report-unused-disable-directives .",
     "eslint:fix": "npm run eslint -- --fix",
     "pretest": "npm run rebuild",
-    "docker:build": "DOCKER_BUILDKIT=1 sudo docker build --build-arg NR_ENABLED=$NR_ENABLED_VALUE --build-arg FROM_FOLDER=services --build-arg SERVICE_NAME=tenant-mgmt-service -t $IMAGE_REPO_NAME/$npm_package_name:$npm_package_version ../../. -f ./Dockerfile",
+    "docker:build": "DOCKER_BUILDKIT=1 sudo docker build --build-arg NR_ENABLED=$NR_ENABLED_VALUE --build-arg FROM_FOLDER=services --build-arg SERVICE_NAME=tenant-mgmt-service -t $IMAGE_REPO_NAME/$npm_package_name:$npm_package_version ../../. -f ./Dockerfile  --platform linux/amd64",
     "docker:run": "docker run -p 3000:3000 -d tenant-mgmt-service",
     "symlink-resolver": "symlink-resolver",
     "resolve-links": "npm run symlink-resolver build ./node_modules/@local",
@@ -84,7 +84,7 @@
     "loopback-connector-postgresql": "^7.0.4",
     "loopback4-authentication": "^13.0.0",
     "loopback4-authorization": "^8.0.0",
-    "loopback4-message-bus-connector": "^2.0.0",
+    "loopback4-message-bus-connector": "^2.0.4",
     "swagger-stats": "^0.99.5",
     "symlink-resolver": "0.2.1",
     "tslib": "^2.0.0"

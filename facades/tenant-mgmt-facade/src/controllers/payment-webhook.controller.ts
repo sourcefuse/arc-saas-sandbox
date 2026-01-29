@@ -28,14 +28,28 @@ export class WebhookPaymentController {
   })
   @intercept(PAYMENT_WEBHOOK_VERIFIER)
   @post('/webhooks/payments')
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async handleWebhook(@requestBody() payload: any): Promise<void> {
-    const event = payload.event_type;
-    const content = payload.content;
-
-    console.log('webhook inside controller, with payload,', payload);
+  async handleWebhook(
+    @requestBody({
+      content: {
+        'application/json': {
+          'x-parser': 'raw',
+        },
+      },
+    })
+    payload: any,
+  ): Promise<void> {
+    // Convert the buffer payload to JSON
+    const jsonString = payload.toString('utf-8');
+    const parsedPayload = JSON.parse(jsonString);
+    const event = parsedPayload.type;
+    const content = parsedPayload.data.object;
+    console.log('webhook inside controller, with payload,', parsedPayload);
     switch (event) {
-      case 'payment_succeeded':
+      case 'invoice.paid':
+        await this.handlePaymentSucceeded(content);
+        break;
+
+      case 'invoice.payment_succeeded':
         await this.handlePaymentSucceeded(content);
         break;
       // Handle other events here
@@ -44,11 +58,10 @@ export class WebhookPaymentController {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private async handlePaymentSucceeded(content: any): Promise<void> {
     console.log('handle suceeed payment started');
     const customer = await this.billingHelperService.getCustomer({
-      where: {customerId: content.customer.id},
+      where: {customerId: content.customer},
       include: [
         {
           relation: 'invoices', // This includes related invoices

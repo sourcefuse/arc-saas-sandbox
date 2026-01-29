@@ -24,7 +24,7 @@
     "eslint:fix": "npm run eslint -- --fix",
     "pretest": "npm run rebuild",
     "posttest": "npm run lint",
-    "docker:build": "docker build -t orchestrator-service .",
+    "docker:build": "docker build -t orchestrator-service .  --platform linux/amd64",
     "docker:run": "docker run -p 3000:3000 -d orchestrator-service",
     "premigrate": "npm run build",
     "migrate": "node ./dist/migrate",
@@ -64,7 +64,7 @@
     "aws-lambda": "^1.0.7",
     "axios": "^1.7.7",
     "jsonwebtoken": "^9.0.2",
-    "loopback4-message-bus-connector": "^2.0.0",
+    "loopback4-message-bus-connector": "^2.0.4",
     "tslib": "^2.0.0"
   },
   "devDependencies": {
@@ -77,5 +77,8 @@
     "eslint": "^8.57.1",
     "source-map-support": "^0.5.21",
     "typescript": "~5.2.2"
+  },
+  "overrides": {
+    "uuid": "^8.3.2"
   }
 }

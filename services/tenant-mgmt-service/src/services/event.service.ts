@@ -69,7 +69,8 @@ export class EventConnector implements IEventConnector<EventBodyType> {
         },
       },
     };
-    await this.eventBridgeProducer.send(eventPayload);
+    await this.eventBridgeProducer.send(eventPayload.data,eventPayload.type) ;
+    console.log('Event published to Event Bridge:', data?.tenant?.id);
   }
 
   private removeFields(obj: AnyObject, fieldsToRemove: string[]): AnyObject {

@@ -83,6 +83,10 @@ export class AuthenticationService extends BootMixin(
 
     // Set up the custom sequence
     this.sequence(ServiceSequence);
+    this.bind(AuthServiceBindings.Config).to({
+      useCustomSequence: false,
+      useSymmetricEncryption: true,
+    })
 
     // Add authentication component
     this.component(AuthenticationComponent);
@@ -91,6 +95,7 @@ export class AuthenticationService extends BootMixin(
 
     // Add bearer verifier component
     this.bind(BearerVerifierBindings.Config).to({
+      useSymmetricEncryption: true,
       type: BearerVerifierType.service,
     } as BearerVerifierConfig);
     this.component(BearerVerifierComponent);

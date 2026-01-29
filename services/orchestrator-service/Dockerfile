@@ -18,4 +18,7 @@ COPY . .
 # Build Loopback app
 RUN npm run build
 
+# Pre-create locales directory for @sourceloop/core i18n
+RUN mkdir -p node_modules/@sourceloop/core/locales
+
 CMD [ "./dist/lambda.handler" ]

@@ -39,6 +39,12 @@ export class Tenant extends UserModifiableEntity {
   status: TenantStatus;
 
   @property({
+    type: Address,
+    description: 'address of tenant',
+  })
+  address?: Address;
+
+  @property({
     type: 'string',
     description:
       'a short string used to identify a tenant. This is also used as the namespace and subdomain for this particular tenant',

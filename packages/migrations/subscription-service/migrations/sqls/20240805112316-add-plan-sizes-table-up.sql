@@ -1,4 +1,4 @@
-CREATE TABLE main.plan_sizes
+CREATE TABLE IF NOT EXISTS main.plan_sizes
 (
 	id uuid DEFAULT (md5(((random())::text || (clock_timestamp())::text)))::uuid NOT NULL  ,
     size text NOT NULL,

@@ -4,3 +4,4 @@ export * from './aws-code-build.service';
 export * from './tenant-provisioning-success-consumer.service';
 export * from './tenant-deployment-consumer.service';
 export * from './data-store.service';
+export * from './event-handler.service';

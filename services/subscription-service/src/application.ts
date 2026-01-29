@@ -25,11 +25,13 @@ import {RestApplication} from '@loopback/rest';
 import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
 import * as openapi from './openapi.json';
-import {SubscriptionServiceComponent} from '@sourceloop/ctrl-plane-subscription-service';
+import {SubscriptionServiceBindings, SubscriptionServiceComponent} from '@sourceloop/ctrl-plane-subscription-service';
 import {
   ChargeBeeBindings,
   BillingComponentBindings,
   ChargeBeeServiceProvider,
+  StripeServiceProvider,
+  StripeBindings,
 } from 'loopback4-billing';
 
 export {ApplicationConfig};
@@ -78,14 +80,16 @@ export class SubscriptionServiceApplication extends BootMixin(
     // Set up the custom sequence
     this.sequence(ServiceSequence);
 
+    this.bind(SubscriptionServiceBindings.Config).to({
+      useCustomSequence: true,
+    })
     // Add authentication component
     this.component(AuthenticationComponent);
-    this.bind(ChargeBeeBindings.config).to({
-      site: process.env.SITE ?? '',
-      apiKey: process.env.API_KEY ?? '',
+    this.bind(StripeBindings.config).to({
+      secretKey: process.env.STRIPE_SECRET ?? '',
     });
     this.bind(BillingComponentBindings.SDKProvider).toProvider(
-      ChargeBeeServiceProvider,
+      StripeServiceProvider,
     );
 
     this.component(SubscriptionServiceComponent);
@@ -93,6 +97,7 @@ export class SubscriptionServiceApplication extends BootMixin(
     // Add bearer verifier component
     this.bind(BearerVerifierBindings.Config).to({
       type: BearerVerifierType.service,
+      useSymmetricEncryption: true,
     } as BearerVerifierConfig);
     this.component(BearerVerifierComponent);
     // Add authorization component

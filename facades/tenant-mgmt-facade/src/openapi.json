@@ -5,8 +5,7 @@
     "version": "1.0.0",
     "description": "tenant-mgmt-facade",
     "contact": {
-      "name": "akshatdubeysf",
-      "email": "akshat.dubey@sourcefuse.com"
+      "name": "SourceFuse"
     }
   },
   "paths": {
@@ -821,6 +820,7 @@
         "requestBody": {
           "content": {
             "application/json": {
+              "x-parser": "raw",
               "schema": {
                 "type": "object"
               }
@@ -863,49 +863,10 @@
       }
     },
     "schemas": {
-      "WebhookDTO": {
-        "title": "WebhookDTO",
+      "Address": {
+        "title": "Address",
         "type": "object",
-        "description": "(tsType: WebhookDTO, schemaOptions: { title: 'WebhookDTO' })",
-        "properties": {
-          "initiatorId": {
-            "type": "string"
-          },
-          "data": {
-            "type": "object"
-          },
-          "type": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "initiatorId",
-          "data",
-          "type"
-        ],
-        "additionalProperties": false,
-        "x-typescript-type": "WebhookDTO"
-      },
-      "IdpDetailsDTO": {
-        "title": "IdpDetailsDTO",
-        "type": "object",
-        "description": "model describing payload for IDP controller (tsType: IdpDetailsDTO, schemaOptions: { title: 'IdpDetailsDTO' })",
-        "properties": {
-          "tenant": {
-            "type": "object",
-            "description": "Tenat object"
-          },
-          "plan": {
-            "type": "object",
-            "description": "plan object"
-          }
-        },
-        "additionalProperties": false
-      },
-      "TenantMgmtConfig": {
-        "title": "TenantMgmtConfig",
-        "type": "object",
-        "description": "tenant_mgmt_configs to save any tenant specific data related to idP",
+        "description": "this model represents the address of a company",
         "properties": {
           "deleted": {
             "type": "boolean"
@@ -934,280 +895,27 @@
             "type": "string"
           },
           "id": {
-            "readOnly": true,
             "type": "string"
           },
-          "configKey": {
-            "type": "string"
-          },
-          "configValue": {
-            "type": "object"
-          },
-          "tenantId": {
-            "type": "string",
-            "description": "id of the tenant this invoice is generated for"
-          }
-        },
-        "required": [
-          "configKey",
-          "configValue",
-          "tenantId"
-        ],
-        "additionalProperties": false
-      },
-      "NewTenantConfig": {
-        "title": "NewTenantConfig",
-        "type": "object",
-        "description": "tenant_mgmt_configs to save any tenant specific data related to idP (tsType: Omit<TenantMgmtConfig, 'id'>, schemaOptions: { title: 'NewTenantConfig', exclude: [ 'id' ] })",
-        "properties": {
-          "deleted": {
-            "type": "boolean"
-          },
-          "deletedOn": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "deletedBy": {
-            "type": "string",
-            "nullable": true
-          },
-          "createdOn": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "modifiedOn": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "createdBy": {
-            "type": "string"
-          },
-          "modifiedBy": {
-            "type": "string"
-          },
-          "configKey": {
-            "type": "string"
-          },
-          "configValue": {
-            "type": "object"
-          },
-          "tenantId": {
-            "type": "string",
-            "description": "id of the tenant this invoice is generated for"
-          }
-        },
-        "required": [
-          "configKey",
-          "configValue",
-          "tenantId"
-        ],
-        "additionalProperties": false
-      },
-      "TenantWithRelations": {
-        "title": "TenantWithRelations",
-        "type": "object",
-        "description": "main model of the service that represents a tenant in the system, either pooled or siloed (tsType: TenantWithRelations, schemaOptions: { includeRelations: true })",
-        "properties": {
-          "deleted": {
-            "type": "boolean"
-          },
-          "deletedOn": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "deletedBy": {
-            "type": "string",
-            "nullable": true
-          },
-          "createdOn": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "modifiedOn": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "createdBy": {
-            "type": "string"
-          },
-          "modifiedBy": {
-            "type": "string"
-          },
-          "id": {
-            "readOnly": true,
-            "type": "string"
-          },
-          "name": {
-            "type": "string",
-            "description": "name of the tenant"
-          },
-          "status": {
-            "type": "number",
-            "description": "status of a tenant, it can be - 0(active), 1(provisioning),2(deprovisioning),3(inactive)",
-            "enum": [
-              0,
-              1,
-              2,
-              3,
-              4
-            ]
-          },
-          "key": {
-            "type": "string",
-            "description": "a short string used to identify a tenant. This is also used as the namespace and subdomain for this particular tenant",
-            "pattern": "^[a-z0-9]+$",
-            "maxLength": 10
-          },
-          "spocUserId": {
-            "type": "string",
-            "description": "user id of the admin user who acts as a spoc for this tenant."
-          },
-          "domains": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "description": "array of domains that are allowed for this tenant"
-            }
-          },
-          "leadId": {
-            "type": "string",
-            "description": "id of the lead from which this tenant was generated. this is optional as a tenant can be created without this lead."
-          },
-          "addressId": {
-            "type": "string",
-            "description": "id of the address of the tenant"
-          },
-          "contacts": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ContactWithRelations"
-            }
-          },
-          "resources": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ResourceWithRelations"
-            }
-          },
-          "lead": {
-            "$ref": "#/components/schemas/LeadWithRelations"
-          },
-          "foreignKey": {},
           "address": {
-            "$ref": "#/components/schemas/AddressWithRelations"
-          }
-        },
-        "required": [
-          "name",
-          "status",
-          "key",
-          "domains"
-        ],
-        "additionalProperties": false
-      },
-      "TenantMgmtConfigWithRelations": {
-        "title": "TenantMgmtConfigWithRelations",
-        "type": "object",
-        "description": "tenant_mgmt_configs to save any tenant specific data related to idP (tsType: TenantMgmtConfigWithRelations, schemaOptions: { includeRelations: true })",
-        "properties": {
-          "deleted": {
-            "type": "boolean"
-          },
-          "deletedOn": {
             "type": "string",
-            "format": "date-time",
-            "nullable": true
+            "description": "address of the company"
           },
-          "deletedBy": {
+          "city": {
             "type": "string",
-            "nullable": true
+            "description": "city of the company"
           },
-          "createdOn": {
+          "state": {
             "type": "string",
-            "format": "date-time"
+            "description": "state of the company"
           },
-          "modifiedOn": {
+          "zip": {
             "type": "string",
-            "format": "date-time"
+            "description": "zip code of the company"
           },
-          "createdBy": {
-            "type": "string"
-          },
-          "modifiedBy": {
-            "type": "string"
-          },
-          "id": {
-            "readOnly": true,
-            "type": "string"
-          },
-          "configKey": {
-            "type": "string"
-          },
-          "configValue": {
-            "type": "object"
-          },
-          "tenantId": {
+          "country": {
             "type": "string",
-            "description": "id of the tenant this invoice is generated for"
-          },
-          "tenant": {
-            "$ref": "#/components/schemas/TenantWithRelations"
-          },
-          "foreignKey": {}
-        },
-        "required": [
-          "configKey",
-          "configValue",
-          "tenantId"
-        ],
-        "additionalProperties": false
-      },
-      "TenantMgmtConfigPartial": {
-        "title": "TenantMgmtConfigPartial",
-        "type": "object",
-        "description": "tenant_mgmt_configs to save any tenant specific data related to idP (tsType: Partial<TenantMgmtConfig>, schemaOptions: { partial: true })",
-        "properties": {
-          "deleted": {
-            "type": "boolean"
-          },
-          "deletedOn": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "deletedBy": {
-            "type": "string",
-            "nullable": true
-          },
-          "createdOn": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "modifiedOn": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "createdBy": {
-            "type": "string"
-          },
-          "modifiedBy": {
-            "type": "string"
-          },
-          "id": {
-            "readOnly": true,
-            "type": "string"
-          },
-          "configKey": {
-            "type": "string"
-          },
-          "configValue": {
-            "type": "object"
-          },
-          "tenantId": {
-            "type": "string",
-            "description": "id of the tenant this invoice is generated for"
+            "description": "country of the company"
           }
         },
         "additionalProperties": false
@@ -1244,7 +952,6 @@
             "type": "string"
           },
           "id": {
-            "readOnly": true,
             "type": "string"
           },
           "name": {
@@ -1261,6 +968,9 @@
               3,
               4
             ]
+          },
+          "address": {
+            "$ref": "#/components/schemas/Address"
           },
           "key": {
             "type": "string",
@@ -1699,7 +1409,6 @@
             "type": "string"
           },
           "id": {
-            "readOnly": true,
             "type": "string"
           },
           "firstName": {
@@ -1771,7 +1480,6 @@
             "type": "string"
           },
           "id": {
-            "readOnly": true,
             "type": "string"
           },
           "externalIdentifier": {
@@ -1834,7 +1542,6 @@
             "type": "string"
           },
           "id": {
-            "readOnly": true,
             "type": "string"
           },
           "address": {
@@ -1892,7 +1599,6 @@
             "type": "string"
           },
           "id": {
-            "readOnly": true,
             "type": "string"
           },
           "firstName": {
@@ -1936,6 +1642,108 @@
         ],
         "additionalProperties": false
       },
+      "TenantWithRelations": {
+        "title": "TenantWithRelations",
+        "type": "object",
+        "description": "main model of the service that represents a tenant in the system, either pooled or siloed (tsType: TenantWithRelations, schemaOptions: { includeRelations: true })",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "deletedOn": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "deletedBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "modifiedBy": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "description": "name of the tenant"
+          },
+          "status": {
+            "type": "number",
+            "description": "status of a tenant, it can be - 0(active), 1(provisioning),2(deprovisioning),3(inactive)",
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "key": {
+            "type": "string",
+            "description": "a short string used to identify a tenant. This is also used as the namespace and subdomain for this particular tenant",
+            "pattern": "^[a-z0-9]+$",
+            "maxLength": 10
+          },
+          "spocUserId": {
+            "type": "string",
+            "description": "user id of the admin user who acts as a spoc for this tenant."
+          },
+          "domains": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "array of domains that are allowed for this tenant"
+            }
+          },
+          "leadId": {
+            "type": "string",
+            "description": "id of the lead from which this tenant was generated. this is optional as a tenant can be created without this lead."
+          },
+          "addressId": {
+            "type": "string",
+            "description": "id of the address of the tenant"
+          },
+          "contacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactWithRelations"
+            }
+          },
+          "resources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResourceWithRelations"
+            }
+          },
+          "lead": {
+            "$ref": "#/components/schemas/LeadWithRelations"
+          },
+          "foreignKey": {}
+        },
+        "required": [
+          "name",
+          "status",
+          "key",
+          "domains"
+        ],
+        "additionalProperties": false
+      },
       "CheckBillingSubscriptionsDTO": {
         "title": "CheckBillingSubscriptionsDTO",
         "type": "object",
@@ -1965,33 +1773,6 @@
           "token"
         ],
         "additionalProperties": false
-      },
-      "PaymentDetailsDTOOptional_name_": {
-        "title": "PaymentDetailsDTOOptional_name_",
-        "type": "object",
-        "description": "(tsType: @loopback/repository-json-schema#Optional<PaymentDetailsDTO, 'name'>, schemaOptions: { optional: [ 'name' ] })",
-        "properties": {
-          "cardNumber": {
-            "type": "string"
-          },
-          "expiryMonth": {
-            "type": "number"
-          },
-          "expiryYear": {
-            "type": "number"
-          },
-          "cvv": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "cardNumber",
-          "expiryMonth",
-          "expiryYear",
-          "cvv"
-        ],
-        "additionalProperties": false,
-        "x-typescript-type": "@loopback/repository-json-schema#Optional<PaymentDetailsDTO, 'name'>"
       },
       "CreateTenantDTOforLead": {
         "title": "CreateTenantDTOforLead",
@@ -2054,8 +1835,8 @@
             "type": "string",
             "maxLength": 300
           },
-          "paymentDetails": {
-            "$ref": "#/components/schemas/PaymentDetailsDTOOptional_name_"
+          "paymentToken": {
+            "type": "string"
           }
         },
         "required": [
@@ -2063,7 +1844,7 @@
           "key",
           "domains",
           "paymentMethod",
-          "paymentDetails"
+          "paymentToken"
         ],
         "additionalProperties": false
       },
@@ -2175,6 +1956,249 @@
           "companyName",
           "email"
         ],
+        "additionalProperties": false
+      },
+      "WebhookDTO": {
+        "title": "WebhookDTO",
+        "type": "object",
+        "description": "(tsType: WebhookDTO, schemaOptions: { title: 'WebhookDTO' })",
+        "properties": {
+          "initiatorId": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object"
+          },
+          "type": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "initiatorId",
+          "data",
+          "type"
+        ],
+        "additionalProperties": false,
+        "x-typescript-type": "WebhookDTO"
+      },
+      "TenantMgmtConfig": {
+        "title": "TenantMgmtConfig",
+        "type": "object",
+        "description": "tenant_configs to save any tenant specific data related to idP",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "deletedOn": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "deletedBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "modifiedBy": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "configKey": {
+            "type": "string"
+          },
+          "configValue": {
+            "type": "object"
+          },
+          "tenantId": {
+            "type": "string",
+            "description": "id of the tenant this invoice is generated for"
+          }
+        },
+        "required": [
+          "configKey",
+          "configValue",
+          "tenantId"
+        ],
+        "additionalProperties": false
+      },
+      "NewTenantConfig": {
+        "title": "NewTenantConfig",
+        "type": "object",
+        "description": "tenant_configs to save any tenant specific data related to idP (tsType: Omit<TenantMgmtConfig, 'id'>, schemaOptions: { title: 'NewTenantConfig', exclude: [ 'id' ] })",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "deletedOn": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "deletedBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "modifiedBy": {
+            "type": "string"
+          },
+          "configKey": {
+            "type": "string"
+          },
+          "configValue": {
+            "type": "object"
+          },
+          "tenantId": {
+            "type": "string",
+            "description": "id of the tenant this invoice is generated for"
+          }
+        },
+        "required": [
+          "configKey",
+          "configValue",
+          "tenantId"
+        ],
+        "additionalProperties": false
+      },
+      "TenantMgmtConfigWithRelations": {
+        "title": "TenantMgmtConfigWithRelations",
+        "type": "object",
+        "description": "tenant_configs to save any tenant specific data related to idP (tsType: TenantMgmtConfigWithRelations, schemaOptions: { includeRelations: true })",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "deletedOn": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "deletedBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "modifiedBy": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "configKey": {
+            "type": "string"
+          },
+          "configValue": {
+            "type": "object"
+          },
+          "tenantId": {
+            "type": "string",
+            "description": "id of the tenant this invoice is generated for"
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/TenantWithRelations"
+          },
+          "foreignKey": {}
+        },
+        "required": [
+          "configKey",
+          "configValue",
+          "tenantId"
+        ],
+        "additionalProperties": false
+      },
+      "TenantMgmtConfigPartial": {
+        "title": "TenantMgmtConfigPartial",
+        "type": "object",
+        "description": "tenant_configs to save any tenant specific data related to idP (tsType: Partial<TenantMgmtConfig>, schemaOptions: { partial: true })",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "deletedOn": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "deletedBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "modifiedBy": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "configKey": {
+            "type": "string"
+          },
+          "configValue": {
+            "type": "object"
+          },
+          "tenantId": {
+            "type": "string",
+            "description": "id of the tenant this invoice is generated for"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IdpDetailsDTO": {
+        "title": "IdpDetailsDTO",
+        "type": "object",
+        "description": "model describing payload for IDP controller (tsType: IdpDetailsDTO, schemaOptions: { title: 'IdpDetailsDTO' })",
+        "properties": {
+          "tenant": {
+            "type": "object",
+            "description": "Tenat object"
+          },
+          "plan": {
+            "type": "object",
+            "description": "plan object"
+          }
+        },
         "additionalProperties": false
       },
       "PingResponse": {
@@ -2667,6 +2691,9 @@
                   "status": {
                     "type": "boolean"
                   },
+                  "address": {
+                    "type": "boolean"
+                  },
                   "key": {
                     "type": "boolean"
                   },
@@ -2700,6 +2727,7 @@
                     "id",
                     "name",
                     "status",
+                    "address",
                     "key",
                     "spocUserId",
                     "domains",

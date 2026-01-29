@@ -13,7 +13,7 @@ import {
   OrchestratorServiceBindings,
   OrchestratorServiceComponent,
 } from '@sourceloop/ctrl-plane-orchestrator-service';
-import {AwsCodeBuildService, TierDetailsProvider} from './services';
+import {AwsCodeBuildService, EventHandlerService, TierDetailsProvider} from './services';
 import {TenantRegistrationProvider} from './services/tenant-registration.handler';
 import {Bindings} from './types';
 import {EventBridgeConnector} from 'loopback4-message-bus-connector';
@@ -38,6 +38,8 @@ export class OrchestratorServiceApplication extends BootMixin(
     );
     this.component(OrchestratorServiceComponent);
     this.component(EventBridgeConnector);
+    // this.bind('services.EventHandlerService').toClass(EventHandlerService);
+    // this.service(EventHandlerService);
 
     // Set up the custom sequence
     this.sequence(MySequence);

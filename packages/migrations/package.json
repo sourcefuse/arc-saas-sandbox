@@ -22,7 +22,7 @@
     "db:migrate:subscription-service": "db-migrate up --config 'subscription-service/database.json' -m 'subscription-service/migrations'",
     "db:migrate-down:subscription-service": "db-migrate down --config 'subscription-service/database.json' -m 'subscription-service/migrations'",
     "db:migrate-reset:subscription-service": "db-migrate reset --config 'subscription-service/database.json' -m 'subscription-service/migrations'",
-    "docker:build": "DOCKER_BUILDKIT=1 sudo docker build --build-arg NR_ENABLED=$NR_ENABLED_VALUE -t $IMAGE_REPO_NAME/$npm_package_name:$npm_package_version ../../. -f ./Dockerfile",
+    "docker:build": "DOCKER_BUILDKIT=1 sudo docker build --build-arg NR_ENABLED=$NR_ENABLED_VALUE -t $IMAGE_REPO_NAME/$npm_package_name:$npm_package_version ../../. -f ./Dockerfile  --platform linux/amd64",
     "docker:push": "sudo docker push $IMAGE_REPO_NAME/$npm_package_name:$npm_package_version"
   },
   "author": "",

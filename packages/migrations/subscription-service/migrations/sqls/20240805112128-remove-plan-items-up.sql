@@ -1,1 +1,1 @@
-DROP TABLE main.plan_items;
+DROP TABLE IF EXISTS main.plan_items;

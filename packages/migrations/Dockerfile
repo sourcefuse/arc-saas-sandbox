@@ -1,5 +1,5 @@
 # Check out https://hub.docker.com/_/node to select a new base image
-FROM node:18-alpine
+FROM node:20-alpine
 
 # Bundle app source code
 COPY . ./migrations
@@ -9,4 +9,4 @@ WORKDIR /migrations
 
 # Install app dependencies
 #RUN npm i npm-run-all
-RUN npm install
+RUN npm install --ignore-scripts
