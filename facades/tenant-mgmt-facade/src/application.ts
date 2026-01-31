@@ -19,7 +19,7 @@ import {
   SecureSequence,
   rateLimitKeyGen,
 } from '@sourceloop/core';
-import {WebhookTenantManagementServiceComponent} from '@sourceloop/ctrl-plane-tenant-management-service';
+import {Auth0IdpProvider, KeycloakIdpProvider, TenantManagementServiceBindings, WebhookTenantManagementServiceComponent} from '@sourceloop/ctrl-plane-tenant-management-service';
 import * as dotenv from 'dotenv';
 import * as dotenvExt from 'dotenv-extended';
 import {AuthenticationComponent} from 'loopback4-authentication';
@@ -83,6 +83,12 @@ export class TenantMgmtFacadeApplication extends BootMixin(
       PaymentWebhookVerifierProvider,
     );
     this.component(CoreComponent);
+          this.bind(TenantManagementServiceBindings.IDP_KEYCLOAK).toProvider(
+        KeycloakIdpProvider,
+      ),
+      this.bind(TenantManagementServiceBindings.IDP_AUTH0).toProvider(
+        Auth0IdpProvider,
+      ),
 
     this.component(WebhookTenantManagementServiceComponent);
 

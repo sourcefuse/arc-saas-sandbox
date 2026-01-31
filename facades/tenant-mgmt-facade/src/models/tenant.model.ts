@@ -38,11 +38,6 @@ export class Tenant extends UserModifiableEntity {
   })
   status: TenantStatus;
 
-  @property({
-    type: Address,
-    description: 'address of tenant',
-  })
-  address?: Address;
 
   @property({
     type: 'string',

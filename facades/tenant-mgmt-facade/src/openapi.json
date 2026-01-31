@@ -863,63 +863,6 @@
       }
     },
     "schemas": {
-      "Address": {
-        "title": "Address",
-        "type": "object",
-        "description": "this model represents the address of a company",
-        "properties": {
-          "deleted": {
-            "type": "boolean"
-          },
-          "deletedOn": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "deletedBy": {
-            "type": "string",
-            "nullable": true
-          },
-          "createdOn": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "modifiedOn": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "createdBy": {
-            "type": "string"
-          },
-          "modifiedBy": {
-            "type": "string"
-          },
-          "id": {
-            "type": "string"
-          },
-          "address": {
-            "type": "string",
-            "description": "address of the company"
-          },
-          "city": {
-            "type": "string",
-            "description": "city of the company"
-          },
-          "state": {
-            "type": "string",
-            "description": "state of the company"
-          },
-          "zip": {
-            "type": "string",
-            "description": "zip code of the company"
-          },
-          "country": {
-            "type": "string",
-            "description": "country of the company"
-          }
-        },
-        "additionalProperties": false
-      },
       "Tenant": {
         "title": "Tenant",
         "type": "object",
@@ -968,9 +911,6 @@
               3,
               4
             ]
-          },
-          "address": {
-            "$ref": "#/components/schemas/Address"
           },
           "key": {
             "type": "string",
@@ -1691,9 +1631,6 @@
               4
             ]
           },
-          "address": {
-            "$ref": "#/components/schemas/Address"
-          },
           "key": {
             "type": "string",
             "description": "a short string used to identify a tenant. This is also used as the namespace and subdomain for this particular tenant",
@@ -1734,7 +1671,10 @@
           "lead": {
             "$ref": "#/components/schemas/LeadWithRelations"
           },
-          "foreignKey": {}
+          "foreignKey": {},
+          "address": {
+            "$ref": "#/components/schemas/AddressWithRelations"
+          }
         },
         "required": [
           "name",
@@ -2691,9 +2631,6 @@
                   "status": {
                     "type": "boolean"
                   },
-                  "address": {
-                    "type": "boolean"
-                  },
                   "key": {
                     "type": "boolean"
                   },
@@ -2727,7 +2664,6 @@
                     "id",
                     "name",
                     "status",
-                    "address",
                     "key",
                     "spocUserId",
                     "domains",

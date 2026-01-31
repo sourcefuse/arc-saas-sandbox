@@ -325,10 +325,10 @@ export class TenantHelperService {
         lastName: tenant.contacts[0].lastName,
         email: tenant.contacts[0].email,
         company: tenant.name,
-        city: tenant.address?.city ?? '',
-        state: tenant.address?.state ?? '',
-        zip: tenant.address?.zip ?? '',
-        country: tenant.address?.country ?? '',
+        city: (tenant as any).address?.city ?? '',
+        state: (tenant as any).address?.state ?? '',
+        zip: (tenant as any).address?.zip ?? '',
+        country: (tenant as any).address?.country ?? '',
       },
     };
     const res = await this.billingHelperService.createCustomer(
