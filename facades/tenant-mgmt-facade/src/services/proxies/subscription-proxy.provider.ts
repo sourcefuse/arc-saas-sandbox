@@ -84,9 +84,7 @@ export interface SubscriptionProxyService {
   webhookBillingPayment(token: string, content: any): Promise<void>;
 }
 
-export class SubscriptionProxyServiceProvider
-  implements Provider<SubscriptionProxyService>
-{
+export class SubscriptionProxyServiceProvider implements Provider<SubscriptionProxyService> {
   constructor(
     @inject('datasources.SubscriptionService')
     protected dataSource: SubscriptionServiceDataSource,

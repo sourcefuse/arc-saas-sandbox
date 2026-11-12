@@ -13,9 +13,7 @@ export interface NotificationProxyService {
   createNotification(token: string, body: object): Promise<JSONObject>;
 }
 
-export class NotificationProxyServiceProvider
-  implements Provider<NotificationProxyService>
-{
+export class NotificationProxyServiceProvider implements Provider<NotificationProxyService> {
   constructor(
     @inject('datasources.NotificationService')
     protected dataSource: NotificationServiceDataSource,

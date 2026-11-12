@@ -4,9 +4,9 @@ import axios from 'axios';
 import {TenantRegistrationDetails, TypicalEventHandler} from '../types';
 
 @injectable({scope: BindingScope.TRANSIENT})
-export class TenantRegistrationProvider
-  implements Provider<TypicalEventHandler<TenantRegistrationDetails>>
-{
+export class TenantRegistrationProvider implements Provider<
+  TypicalEventHandler<TenantRegistrationDetails>
+> {
   constructor() {}
 
   value() {

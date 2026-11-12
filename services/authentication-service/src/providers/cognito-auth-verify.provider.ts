@@ -22,9 +22,7 @@ import {
   VerifyFunction,
 } from 'loopback4-authentication';
 
-export class CognitoOauthVerifyProvider
-  implements Provider<VerifyFunction.CognitoAuthFn>
-{
+export class CognitoOauthVerifyProvider implements Provider<VerifyFunction.CognitoAuthFn> {
   constructor(
     @repository(UserRepository)
     public userRepository: UserRepository,

@@ -31,6 +31,7 @@ import {
   NodemailerProvider,
 } from 'loopback4-notifications/nodemailer';
 import {NotificationBindings} from 'loopback4-notifications';
+import type {Options as SMTPPoolOptions} from 'nodemailer/lib/smtp-pool';
 
 export {ApplicationConfig};
 
@@ -105,11 +106,11 @@ export class NotificationService extends BootMixin(
 
     this.component(RestExplorerComponent);
 
-    this.bind(NodemailerBindings.Config).to({
+    const nodemailerConfig: SMTPPoolOptions = {
       pool: true,
-      maxConnections: process.env.MAX_SMTP_CONNECTIONS ?? 10,
+      maxConnections: Number(process.env.MAX_SMTP_CONNECTIONS ?? 10),
       host: process.env.SMTP_HOST!,
-      port: process.env.SMTP_PORT!,
+      port: Number(process.env.SMTP_PORT!),
       secure: false,
       auth: {
         user: process.env.SMTP_USER!,
@@ -118,7 +119,8 @@ export class NotificationService extends BootMixin(
       tls: {
         rejectUnauthorized: true,
       },
-    });
+    };
+    this.bind(NodemailerBindings.Config).to(nodemailerConfig);
     this.bind(NotificationBindings.EmailProvider).toProvider(
       NodemailerProvider,
     );

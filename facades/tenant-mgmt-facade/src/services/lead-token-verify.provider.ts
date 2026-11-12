@@ -5,9 +5,9 @@ import {verify} from 'jsonwebtoken';
 import {VerifyFunction} from 'loopback4-authentication';
 import {LeadTokenRepository} from '../repositories';
 import {LeadUserWithToken} from '../types';
-export class LeadTokenVerifierProvider
-  implements Provider<VerifyFunction.BearerFn<LeadUserWithToken>>
-{
+export class LeadTokenVerifierProvider implements Provider<
+  VerifyFunction.BearerFn<LeadUserWithToken>
+> {
   constructor(
     @repository(LeadTokenRepository)
     public leadTokenRepository: LeadTokenRepository,
