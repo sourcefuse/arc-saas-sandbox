@@ -41,9 +41,7 @@ export interface TenantMgmtProxyService {
   getTenants(token: string, filter: Filter<Tenant>): Promise<ITenant[]>;
 }
 
-export class TenantMgmtProxyServiceProvider
-  implements Provider<TenantMgmtProxyService>
-{
+export class TenantMgmtProxyServiceProvider implements Provider<TenantMgmtProxyService> {
   constructor(
     @inject('datasources.TenantMgmtService')
     protected dataSource: TenantMgmtServiceDataSource,

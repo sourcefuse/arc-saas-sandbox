@@ -44,9 +44,10 @@ export interface ProvisioningInputs {
 
 @injectable({scope: BindingScope.TRANSIENT})
 @consumer
-export class TenantProvisioningConsumerService
-  implements IConsumer<AnyObject, string>
-{
+export class TenantProvisioningConsumerService implements IConsumer<
+  AnyObject,
+  string
+> {
   event: DefaultEventTypes.TENANT_PROVISIONING =
     DefaultEventTypes.TENANT_PROVISIONING;
   queue: QueueType = QueueType.EventBridge;

@@ -6,9 +6,10 @@ import {consumer, IConsumer, QueueType} from 'loopback4-message-bus-connector';
 
 @injectable({scope: BindingScope.TRANSIENT})
 @consumer
-export class TenantProvisioningSuccessConsumerService
-  implements IConsumer<AnyObject, string>
-{
+export class TenantProvisioningSuccessConsumerService implements IConsumer<
+  AnyObject,
+  string
+> {
   event: DefaultEventTypes.TENANT_PROVISIONING_SUCCESS =
     DefaultEventTypes.TENANT_PROVISIONING_SUCCESS;
   queue: QueueType = QueueType.EventBridge;
